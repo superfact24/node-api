@@ -1,4 +1,8 @@
 const express = require('express');
+
+const conexao = require('./conexao');
+
+conexao.conexao();
 const app = express();
 
 // Permitir usar json no body(corpo) da requisição
@@ -26,45 +30,37 @@ app.get('/', function(req, res){
 });
 // listagem de todos os cursos
 app.get('/curso', function(req, res){
-  res.send(cursos)
+  conexao.listarCursos(function(dados) {
+    return res.send(dados);
+  });
 });
 
 // listagem de um curso pelo id
 app.get('/curso/:id', function(req, res){
-  var curso = cursos.find(function(item) {return item.id == req.params.id})
-  res.send(curso)
+  conexao.listarCurso(req.params.id, function(dados) {
+    return res.send(dados);
+  });
 });
 
 // criar um novo curso
 app.post('/curso/', function(req, res){
   var curso = req.body;
-  /* 
-  comanda para pegar o id do ultimoo elemento do array
-   e adicionar 1 para ser o id no novo curso */
-  curso.id = cursos[cursos.length-1].id+1;
-  cursos.push(curso);
+  conexao.criarCurso(curso);
   res.send(curso)
 });
 
 // editar um curso
 app.put('/curso/:id', function(req, res){
   var curso = req.body;
-  curso.id = req.params.id;
-  var index = cursos.findIndex(function(item) {
-    return item.id == curso.id;
-  })
-  cursos[index] = curso;
+  var id = req.params.id;
+  conexao.editarCurso(id, curso)
   res.send(curso)
 });
 
 // apgar um curso
 app.delete('/curso/:id', function(req, res){
-  var index = cursos.findIndex(function(item) {
-    return item.id == req.params.id;
-  })
-  
-  cursos.splice(index, 1);
-  res.send(cursos)
+  conexao.eliminarCurso(req.params.id);
+  res.send("Curso eliminado com sucesso")
 });
 app.listen(3000, function(){
   console.log('Servidor operacional');
