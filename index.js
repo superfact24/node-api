@@ -62,6 +62,43 @@ app.delete('/curso/:id', function(req, res){
   conexao.eliminarCurso(req.params.id);
   res.send("Curso eliminado com sucesso")
 });
+
+
+
+// listagem de todos os alunos
+app.get('/aluno', function(req, res){
+  conexao.listarAlunos(function(dados) {
+    return res.send(dados);
+  });
+});
+
+// listagem de um aluno pelo id
+app.get('/aluno/:id', function(req, res){
+  conexao.listarAluno(req.params.id, function(dados) {
+    return res.send(dados);
+  });
+});
+
+// criar um novo aluno
+app.post('/aluno/', function(req, res){
+  var aluno = req.body;
+  conexao.criarAluno(aluno);
+  res.send(aluno)
+});
+
+// editar um aluno
+app.put('/aluno/:id', function(req, res){
+  var aluno = req.body;
+  var id = req.params.id;
+  conexao.editarAluno(id, aluno)
+  res.send(aluno)
+});
+
+// apgar um aluno
+app.delete('/aluno/:id', function(req, res){
+  conexao.eliminarAluno(req.params.id);
+  res.send("Aluno eliminado com sucesso")
+});
 app.listen(3000, function(){
   console.log('Servidor operacional');
 })
